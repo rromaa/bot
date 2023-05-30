@@ -12,7 +12,7 @@ telegram_chat_id = '5066494432'
 # Задаем параметры для GitHUB API
 github_user = 'rromaa'
 github_repo = 'bot'
-github_token = 'ВАШ_ТОКЕН'
+github_token = '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'
 
 # Начало бесконечного цикла
 while True:
