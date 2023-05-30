@@ -1,0 +1,35 @@
+Python 3.11.3 (tags/v3.11.3:f3909b8, Apr  4 2023, 23:49:59) [MSC v.1934 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license()" for more information.
+python
+import telegram
+import requests
+import time
+
+# Задаем параметры для подключения к Telegram API
+telegram_token = '6253385106:AAHmdM4jRRrTh6gTb4krupYNWx3g8MRTZtc'
+telegram_chat_id = '5066494432'
+
+# Задаем параметры для GitHUB API
+github_user = 'rromaa'
+github_repo = 'bot'
+github_token = 'ВАШ_ТОКЕН'
+
+# Начало бесконечного цикла
+while True:
+    # Посылаем GET запрос к GitHub API для получения списка pull request'ов
+    response = requests.get('https://api.github.com/repos/%s/%s/pulls?access_token=%s' % (github_user, github_repo, github_token))
+    
+    # Если запрос успешен
+    if response.status_code == 200:
+        # Обрабатываем каждый pull request
+        for pull in response.json():
+            # Если pull request слился и помечен как готовый к мержу
+            if pull['merged'] and pull['mergeable_state'] == 'clean':
+                # Отправляем уведомление в Telegram о завершенном pull request'е
+                message = 'Pull request #%s слился в %s!' % (pull['number'], pull['merged_at'])
+                bot = telegram.Bot(token=telegram_token)
+                bot.send_message(chat_id=telegram_chat_id, text=message)
+    
+    # Ждем 10 минут перед следующим запросом к GitHub API
+    time.sleep(600)
+
